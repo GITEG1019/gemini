@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative AI Example</title>
+    <!-- Add any additional meta tags, styles, or scripts as needed -->
+    <style type="text/css">
+    @charset "utf-8";
+    #dhk {
+        max-height: 300px;
+        padding-top: 10px;
+        padding-right: 10px;
+        padding-bottom: 10px;
+        padding-left: 10px;
+    }
+    #output {
+        background-color: #E38D8F;
+        padding-top: 10px;
+        padding-right: 10px;
+        padding-bottom: 10px;
+        padding-left: 10px;
+    }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "@google/generative-ai": "https://esm.run/@google/generative-ai"
+            }
+        }
+    </script>
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+
+        // Fetch your API_KEY
+        const API_KEY = "AIzaSyAb1ZTGJ_LDcUZ39XlFolNBfLrZutZ-OmA"; // Replace with your actual API key
+
+        // Access your API key (see "Set up your API key" above)
+        const genAI = new GoogleGenerativeAI(API_KEY);
+
+        function handleButtonClick() {
+            const userInput = document.getElementById("user-message").value;
+            const prompt = userInput || "默认提示"; // 使用用户输入，如果没有输入则使用默认提示
+
+            run(prompt);
+        }
+
+        async function run(userInput) {
+            const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+            const result = await model.generateContent(userInput);
+            const response = await result.response;
+            const text = response.text();
+            console.log(text);
+
+            // 进行其他操作，比如更新 HTML 内容
+			document.getElementById("output").innerText = text;
+        }
+
+        // 初始运行
+        document.addEventListener("DOMContentLoaded", function () {
+            // 为按钮添加点击事件处理程序
+            document.querySelector("#user-input button").addEventListener("click", handleButtonClick);
+        });
+    </script>
+</head>
+
+<body>
+    <!-- Your HTML and CSS content goes here -->
+    <div id="user-input">
+        <input type="text" id="user-message" placeholder="输入你的问题...">
+        <button type="button">确认</button>
+    </div>
+	  <div id="output"></div>
+</body>
+
+</html>
+```
