@@ -4,25 +4,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generative AI Example</title>
-    <!-- Add any additional meta tags, styles, or scripts as needed -->
+    <title>Generative AI Chat</title>
+
     <style type="text/css">
-    @charset "utf-8";
-    #dhk {
-        max-height: 300px;
-        padding-top: 10px;
-        padding-right: 10px;
-        padding-bottom: 10px;
-        padding-left: 10px;
-    }
-    #output {
-        background-color: #E38D8F;
-        padding-top: 10px;
-        padding-right: 10px;
-        padding-bottom: 10px;
-        padding-left: 10px;
-    }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #3494e6, #ec6ead);
+            color: #fff;
+        }
+
+        #header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        #logo {
+    width: 100px;  /* 预留位置的宽度 */
+    height: 100px; /* 预留位置的高度 */
+    border-radius: 50%;
+    margin: 20px auto;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    float: none;
+    clear: left;
+}
+
+#logo img {
+    width: 130%;  /* 图片宽度占满 #logo 元素 */
+    height: 130%; /* 图片高度占满 #logo 元素 */
+    object-fit: cover; /* 调整图片填充方式 */
+    object-position: center; /* 图片在 #logo 中居中显示 */
+}
+
+
+        #user-input {
+    text-align: center;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;  /* 让子元素水平居中 */
+}
+
+#user-message {
+    padding: 10px;
+    width: 20%;  /* 你可以调整这里的百分比或使用其他单位 */
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+#confirm-btn {
+    padding: 10px 20px;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#output {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px auto;  /* 让聊天框水平居中 */
+    max-height: 400px;
+    overflow-y: auto;
+    word-wrap: break-word;
+    width: 25%;  /* 你可以调整这里的百分比或使用其他单位 */
+	color: #000;
+}
+#output strong {
+    font-weight: bold;  /* 加粗 */
+}
+.icon {
+    width: 150px;  /* 图标宽度 */
+    height: 75px; /* 图标高度 */
+    margin-right: 5px; /* 图标与文本之间的间距 */
+    vertical-align: middle; /* 垂直居中对齐 */
+    padding-bottom: 21px;
+}
+ h1 {
+       vertical-align: middle;     
+        }
+
     </style>
+
+    <!-- 导入 Generative AI 模块 -->
     <script type="importmap">
         {
             "imports": {
@@ -31,49 +100,57 @@
         }
     </script>
     <script type="module">
-        import { GoogleGenerativeAI } from "@google/generative-ai";
+    const API_KEY = "AIzaSyAb1ZTGJ_LDcUZ39XlFolNBfLrZutZ-OmA"; // 替换成你实际的 API key
 
-        // Fetch your API_KEY
-        const API_KEY = "AIzaSyAb1ZTGJ_LDcUZ39XlFolNBfLrZutZ-OmA"; // Replace with your actual API key
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+    const genAI = new GoogleGenerativeAI(API_KEY);
 
-        // Access your API key (see "Set up your API key" above)
-        const genAI = new GoogleGenerativeAI(API_KEY);
+    function handleButtonClick() {
+        const userInput = document.getElementById("user-message").value;
+        const prompt = userInput || "默认提示"; // 使用用户输入，如果没有输入则使用默认提示
 
-        function handleButtonClick() {
-            const userInput = document.getElementById("user-message").value;
-            const prompt = userInput || "默认提示"; // 使用用户输入，如果没有输入则使用默认提示
+        run(prompt);
+    }
 
-            run(prompt);
-        }
+    const outputElement = document.getElementById("output");  // 只声明一次
 
-        async function run(userInput) {
-            const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    async function run(userInput) {
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-            const result = await model.generateContent(userInput);
-            const response = await result.response;
-            const text = response.text();
-            console.log(text);
+        const result = await model.generateContent(userInput);
+        const response = await result.response;
+		const icon = '<img src="images/icon.png" alt="Gemini AI Icon" class="icon">';
 
-            // 进行其他操作，比如更新 HTML 内容
-			document.getElementById("output").innerText = text;
-        }
+        // 直接使用之前声明的 outputElement
+        outputElement.innerHTML = "<strong>Gemini AI:</strong> " + response.text();
+    }
 
-        // 初始运行
-        document.addEventListener("DOMContentLoaded", function () {
-            // 为按钮添加点击事件处理程序
-            document.querySelector("#user-input button").addEventListener("click", handleButtonClick);
-        });
-    </script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector("#confirm-btn").addEventListener("click", handleButtonClick);
+    });
+</script>
+
 </head>
 
 <body>
-    <!-- Your HTML and CSS content goes here -->
-    <div id="user-input">
-        <input type="text" id="user-message" placeholder="输入你的问题...">
-        <button type="button">确认</button>
+    <div id="header">
+      <h1>
+        <img src="images/icon.png" alt="Gemini AI Icon" class="icon">
+        AI Chat
+    </h1>
     </div>
-	  <div id="output"></div>
+
+<div id="logo">
+    <img src="images/logo.png" alt="Logo">
+</div>
+
+
+<div id="user-input">
+        <input type="text" id="user-message" placeholder="输入你的问题...">
+        <button id="confirm-btn" type="button">发送</button>
+</div>
+
+<div id="output"></div>
 </body>
 
 </html>
-```
